@@ -1,0 +1,21 @@
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,17 @@
++> [!NOTE]
++> This is a **patched build** of Velero maintained by [nookyo](https://github.com/nookyo/velero-patches).
++> The Docker image is available at:
++> ```
++> ghcr.io/nookyo/velero-patches:v1.15.0-patched
++> ```
++> For the list of applied patches see the
++> [releases page](https://github.com/nookyo/velero-patches/releases).
++> For the original upstream source see
++> [vmware-tanzu/velero](https://github.com/vmware-tanzu/velero).
++>
++> To report issues with the patches open an issue in
++> [nookyo/velero-patches](https://github.com/nookyo/velero-patches/issues).
++> To report upstream Velero issues use the [upstream tracker](https://github.com/vmware-tanzu/velero/issues).
++
+ ![100]
+
+ [![Build Status][1]][2] [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3811/badge)](https://bestpractices.coreinfrastructure.org/projects/3811)
