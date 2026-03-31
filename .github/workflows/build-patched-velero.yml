@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Create tag and GitHub release
-        uses: Netcracker/qubership-workflow-hub/actions/tag-action@main
+        uses: netcracker/qubership-workflow-hub/actions/tag-action@d11baa8a4b42d1a931808c0766ee23eb344c47dd #v2.2.0
         with:
           ref: ${{ github.ref_name }}
           tag-name: ${{ inputs.tag }}
@@ -49,14 +49,14 @@ jobs:
         run: rm -rf ./*
 
       - name: Checkout upstream Velero source
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
         with:
           repository: vmware-tanzu/velero
           ref: ${{ inputs.velero-tag }}
           path: velero-src
 
       - name: Checkout this repository (patches)
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
         with:
           ref: ${{ inputs.tag }}
           path: velero-patches
@@ -82,10 +82,10 @@ jobs:
           rm -rf "${GITHUB_WORKSPACE}/velero-patches"
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a #v4.0.0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd #v4.0.0
 
       - name: Collect build metadata
         id: meta
@@ -97,16 +97,17 @@ jobs:
           echo "git_tree_state=clean"          >> $GITHUB_OUTPUT
           VERSION="${{ inputs.velero-tag }}"
           echo "version=${VERSION#v}"          >> $GITHUB_OUTPUT
+          echo "restic_version=$(grep -m1 'RESTIC_VERSION ?=' Makefile | awk -F'= ' '{print $2}')" >> $GITHUB_OUTPUT
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 #v4.0.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 #v7.0.0
         with:
           context: ${{ github.workspace }}/velero-src
           file: ${{ github.workspace }}/velero-src/Dockerfile
@@ -124,6 +125,7 @@ jobs:
             GIT_SHA=${{ steps.meta.outputs.git_sha }}
             GIT_TREE_STATE=${{ steps.meta.outputs.git_tree_state }}
             REGISTRY=ghcr.io/${{ steps.meta.outputs.repo_owner_lc }}
+            RESTIC_VERSION=${{ steps.meta.outputs.restic_version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish GitHub Release
